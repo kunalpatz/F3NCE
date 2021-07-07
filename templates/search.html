@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<body>
+{% extends 'home.html' %}
+{% block content %}
+
+
+<section class="container table-responsive">
+    <table style="width:50% " class="table displayTable">
+        <tr>
+            <th scope="col">Hashes</th>
+            <th scope="col">Values</th>
+        </tr>
+        <tr>
+            {% for k,v in result.items() %}
+        <tr>
+            <td>{{ k }}</td>
+            <td>{{ v }}</td>
+        </tr>
+
+        {% endfor %}
+        </tr>
+    </table>
+</section>
+
+{% endblock %}
+
+<script type="text/javascript">
+    // Load google charts
+    google.charts.load('current', {'packages': ['corechart']});
+    google.charts.setOnLoadCallback(drawChart);
+
+    // Draw the chart and set the chart values
+    function drawChart() {
+        var data = google.visualization.arrayToDataTable([
+            ['State', 'Exploitability'],
+            ['harmless', {{ result['last_analysis_stats']['harmless'] }}],
+            ['suspicious', {{ result['last_analysis_stats']['suspicious'] }}],
+            ['timeout', {{ result['last_analysis_stats']['timeout'] }}],
+            ['undetected', {{ result['last_analysis_stats']['undetected'] }}]
+        ]);
+
+        // Optional; add a title and set the width and height of the chart
+        var options = {'title': 'My Average Day', 'width': 550, 'height': 400};
+
+        // Display the chart inside the <div> element with id="piechart"
+        var chart = new google.visualization.PieChart(document.getElementById('piechart'));
+        chart.draw(data, options);
+    }
+
+</script>
+<div class="no-print" style="margin-top:50px;">
+    <button id="btnPrint" class="btn btn-dark btnPrintPDF">imprimer en PDF</button>
+</div>
+
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+
+<script>
+    $(document).ready(function () {
+        $("#btnPrint").on("click", function () {
+            window.onafterprint = function () {
+                console.log("onafterprint function fired");
+
+            };
+            window.print();
+        });
+    });
+
+</script>
+
+
+</body>
+</html>
